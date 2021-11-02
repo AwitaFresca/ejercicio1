@@ -10,32 +10,49 @@ import { Curso } from 'src/models/curso.interface';
 })
 export class CursoService {
   public cursos!: Observable<Curso[]>;
-  public cursoCollection! : AngularFirestoreCollection<Curso>;
+  public cursoCollection!: AngularFirestoreCollection<Curso>;
   constructor(private firestore: AngularFirestore) {
     this.cursoCollection = this.firestore.collection<Curso>('cursos');
-  console.log(this.cursoCollection);
-  this.obtenerCursos();
-   }
-   //obtiene todos los cursos de la base de datos
-  obtenerCursos(){
+    console.log(this.cursoCollection);
+    this.obtenerCursos();
+  }
+  //obtiene todos los cursos de la base de datos
+  obtenerCursos() {
     this.cursos = this.cursoCollection!.snapshotChanges().pipe(
-    map (action => action.map (a => a.payload.doc.data() as Curso))
+      map(action => action.map(a => a.payload.doc.data() as Curso))
     )
   }
   //obtiene un curso de la base de datos por el id
-  obtenerCurso(idCurso:string){
- 
+  obtenerCurso(idCurso: string) {
+
   }
-  createCurso(data: Curso){
-  
+  public createProducto(prod: Curso): Promise<void> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const id = this.firestore.createId();
+        prod.id = id;
+        const result = await this.cursoCollection?.doc(id).set(prod);
+        resolve(result)
+      }
+      catch (err) {
+        reject(err)
+      }
+    })
+}
+
+
+
+  actualizarCurso(idCurso: string, data: Curso) {
+
+
   }
 
-  actualizarCurso(idCurso: string, data: Curso){
+  agregarCurso(data: Curso) {
 
-    
+
   }
 
-  eliminarCurso(idCurso:string){
+  eliminarCurso(idCurso: string) {
 
   }
 }
